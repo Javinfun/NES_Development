@@ -19,7 +19,7 @@ RESET:
     LDX #$00
     STX $4010       ;disable PCM
 
-    ;initialize the stack register
+    ;initialize the stack register 
     LDX #$FF
     TXS             ;transfer x to the stack
 
@@ -107,4 +107,4 @@ SPRITEDATA
     .word RESET
     ; specialized hardware interupts
 .segment "CHARS"
-    .incbin "rom.chr"   ;reads character file]]
+    .incbin "rom.chr"   ;reads character file
