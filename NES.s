@@ -14,7 +14,7 @@ RESET:
     SEI     ;disables interupts
     CLD     ;turn off decimal mode
 
-    LDX #1000000    ;disable sound IRQ
+    LDX #%1000000    ;disable sound IRQ
     STX $4017
     LDX #$00
     STX $4010       ;disable PCM
@@ -74,32 +74,48 @@ LOADPALETTES:
     CPX #$20
     BNE LOADPALETTES
 
-    LDX #$100
+    LDX #$00
 LOADSPRITES:
     LDA SPRITEDATA, x
     STA $0200, x
     INX
-    CPX #$10        ;16 bytes (4 bytes per sprite, 4 sprites total)
+    CPX #$20        ;16 bytes (4 bytes per sprite, 4 sprites total)
     BNE LOADSPRITES
 
-;ENABLE 
+;ENABLE INTERUPTS
+    CLI 
+    LDA #%10010000
+    STA $2000       ;enable NMI, sprites, background
+    
+    LDA #%00011110
+    STA $2001       ;enable rendering, sprites, background
+
 
     INFLOOP:
         JMP INFLOOP
 NMI:
+
+    LDA #$02        ;LOADING SPRITE Range
+    STA $4014       ;write to OAM DMA register
+
     RTI
 
 PALETTEDATA:
     .byte $00, $0F, $00, $10, 	$00, $0A, $15, $01, 	$00, $29, $28, $27, 	$00, $34, $24, $14 	;background palettes
 	.byte $31, $0F, $15, $30, 	$00, $0F, $11, $30, 	$00, $0F, $30, $27, 	$00, $3C, $2C, $1C 	;sprite palettes
 
-SPRITEDATA
+SPRITEDATA:
 ;Y, SPRITE NUM, attributes, X
     .byte $40, $00, $00, $40
     .byte $40, $01, $00, $48
     .byte $48, $10, $00, $40
     .byte $48, $11, $00, $48
 
+    ;sword
+    .byte $50, $08, %00000001, $80
+    .byte $50, $08, %01000001, $88
+    .byte $58, $18, %00000001, $80
+    .byte $58, $18, %01000001, $88
 
 
 .segment "VECTORS"
