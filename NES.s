@@ -7,7 +7,6 @@
     .byte $00, $00, $00, $00
     .byte $00, $00, $00, $00, $00
     
-    
 .segment "ZEROPAGE"
 VAR:    .RES 1  ;reserves 1 byte of memory
 .segment "STARTUP"
